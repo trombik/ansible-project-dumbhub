@@ -8,3 +8,9 @@ hostname_fqdn: "{% if ansible_os_family == 'Debian' %}{{ inventory_hostname.spli
 hosts_enable_localhost: yes
 hosts_extra_localhosts:
   - "{{ inventory_hostname }}"
+
+os_project_ntopng_listen_address: "{% if ansible_os_family == 'Debian' %}{{ ansible_eth1['ipv4']['address'] }}{% endif %}"
+project_ntopng_listen_address: "{{ os_project_ntopng_listen_address }}"
+
+# XXX disable login in testing environment. should be 1 in prod
+project_ntopng_disable_login: 1
