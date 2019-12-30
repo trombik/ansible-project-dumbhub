@@ -1,5 +1,7 @@
 # `ansible-project-dumbhub`
 
+> This is a Work-in-Progress project.
+
 Create a `dumbhub` that you can place between your router and the peer device
 of ISP. The hub acts as L2 switch, simply forwards all packets from one
 interface to another. However, the hub also runs `ntopng` and other network
@@ -14,9 +16,17 @@ the network, or so that you can see trend of bandwidth. But your router is a
 consumer product without advanced monitoring features. You would like to see
 trends, top talkers, protocols, etc.
 
+## Screenshots
+
+### `ntopng`
+
+![demo](assets/demo.png)
+
+See more screenshots of `ntopng` at [the product page](https://www.ntop.org/products/traffic-analysis/ntop/).
+
 ## Deployment patterns
 
-Depending your constraints, there are different deployment patterns. Choose
+Depending on your constraints, there are different deployment patterns. Choose
 the one that suits to your needs.
 
 ### Peer - dumbhub - Router (NAT)
