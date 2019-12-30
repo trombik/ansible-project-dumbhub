@@ -1,0 +1,6 @@
+---
+
+- name: Restart ntopng_service
+  service:
+    name: "{{ ntopng_service }}"
+    state: restarted

@@ -1,0 +1,47 @@
+---
+
+- name: "Include vars/{{ ansible_os_family }}.yml"
+  include_vars: "{{ ansible_os_family }}.yml"
+
+- name: "Include install-{{ ansible_os_family }}.yml"
+  include: "install-{{ ansible_os_family }}.yml"
+
+- name: "Create {{ ntopng_config_dir }}"
+  file:
+    path: "{{ ntopng_config_dir }}"
+    state: directory
+
+- name: "Create {{ ntopng_config_file }}"
+  template:
+    src: ntopng.conf.j2
+    dest: "{{ ntopng_config_file }}"
+  notify:
+    - Restart ntopng_service
+
+- name: "Add ntopng_user to ntopng_extra_groups"
+  user:
+    name: "{{ ntopng_user }}"
+    append: yes
+    create_home: no
+    groups: "{{ ntopng_extra_groups }}"
+
+- name: Create ntopng_log_dir
+  file:
+    path: "{{ ntopng_log_dir }}"
+    owner: "{{ ntopng_user }}"
+    group: "{{ ntopng_group }}"
+    mode: 0750
+    state: directory
+
+- name: Create ntopng_db_dir
+  file:
+    path: "{{ ntopng_db_dir }}"
+    owner: "{{ ntopng_user }}"
+    group: "{{ ntopng_group }}"
+    mode: 0750
+    state: directory
+
+- name: Start ntopng_service
+  service:
+    name: "{{ ntopng_service }}"
+    state: started

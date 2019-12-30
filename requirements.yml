@@ -6,3 +6,5 @@
 - name: trombik.zsh
 - name: trombik.vim
 - name: trombik.tmux
+- name: trombik.apt_repo
+- name: trombik.ntopng
