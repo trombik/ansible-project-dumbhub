@@ -1,0 +1,43 @@
+---
+os_ntopng_extra_packages:
+  FreeBSD: []
+  OpenBSD: []
+  Debian:
+    - pfring
+    - ntopng-data
+    - net-tools
+  RedHat:
+    - pfring
+    - ntopng-data
+    - net-tools
+ntopng_extra_packages: "{{ os_ntopng_extra_packages[ansible_os_family] }}"
+ntopng_config: |
+  {% if ansible_os_family == 'Debian' %}
+  -e=
+  --data-dir={{ ntopng_db_dir }}
+  --user={{ ntopng_user }}
+  {% endif %}
+  --http-port={{ project_ntopng_listen_address }}:3000
+  --disable-login={{ project_ntopng_disable_login }}
+apt_repo_keys_to_add:
+  - http://packages.ntop.org/apt-stable/ntop.key
+apt_repo_to_add:
+  - deb http://packages.ntop.org/apt-stable/{{ ansible_distribution_version }}/ x64/
+  - deb http://packages.ntop.org/apt-stable/{{ ansible_distribution_version }}/ all/
+redhat_repo_extra_packages:
+  - epel-release
+redhat_repo:
+  epel:
+    mirrorlist: "http://mirrors.fedoraproject.org/mirrorlist?repo=epel-{{ ansible_distribution_major_version }}&arch={{ ansible_architecture }}"
+    gpgcheck: yes
+    enabled: yes
+  ntop:
+    baseurl: http://packages.ntop.org/centos-stable/$releasever/$basearch/
+    enabled: yes
+    gpgcheck: yes
+    gpgkey: http://packages.ntop.org/centos-stable/RPM-GPG-KEY-deri
+  ntop_noarch:
+    baseurl: http://packages.ntop.org/centos-stable/$releasever/noarch/
+    enabled: yes
+    gpgcheck: yes
+    gpgkey: http://packages.ntop.org/centos-stable/RPM-GPG-KEY-deri
