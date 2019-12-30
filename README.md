@@ -9,6 +9,14 @@ monitoring tools, providing a user interface of network status, including
 packets per sec, protocol breakdown, and a list of _top takers_ in the
 network.
 
+The project is managed by `ansible` and several my `ansible` roles, which
+means that the device configuration can be tested in deterministic way in
+a virtualised environment, and you can deploy with a single command on a plain
+default installation from scratch.
+
+The project has a set of tests that you can perform on virtual machine, or
+a machine in production.
+
 ## Use cases
 
 You would like to monitor a network so that you can find _bandwidth eaters_ in
