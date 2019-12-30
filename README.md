@@ -1,29 +1,111 @@
-# `ansible-project-template`
+# `ansible-project-dumbhub`
 
-This is a template repository for automated deployment with `ansile`. The
-template includes:
+Create a `dumbhub` that you can place between your router and the peer device
+of ISP. The hub acts as L2 switch, simply forwards all packets from one
+interface to another. However, the hub also runs `ntopng` and other network
+monitoring tools, providing a user interface of network status, including
+packets per sec, protocol breakdown, and a list of _top takers_ in the
+network.
 
-* A `virtualbox` environment for testing
-* A `prod` environment for production
-* `ansible` playbook to deploy basic tools, such as `vim`, `zsh`, etc
-* A set of tests with `serverspec`
-* A `Rakefile` that simplifies provision
+## Use cases
+
+You would like to monitor a network so that you can find _bandwidth eaters_ in
+the network, or so that you can see trend of bandwidth. But your router is a
+consumer product without advanced monitoring features. You would like to see
+trends, top talkers, protocols, etc.
+
+## Deployment patterns
+
+Depending your constraints, there are different deployment patterns. Choose
+the one that suits to your needs.
+
+### Peer - dumbhub - Router (NAT)
+
+```
+.----------.   .---------.   .--------.
+| ISP peer |---| dumbhub |---| Router |---> Internal network
+`----------'   `---------'   `--------'
+                    |             |
+                    `-----WiFi----'
+```
+
+In this pattern, the router performs NAT. For whatever reason, you cannot
+change network topology or router configuration. The WiFi interface is used
+for accessing to the user interface.
+
+Pros:
+
+* You do not have to change any configuration of the router
+* When the `dumbhub` fails, simply remove the `dumbhub`, and connect the
+  router to ISP peer. Everything should work as before.
+
+Cons:
+
+* As the router rewrites all source address of packets, the `dumbhub` cannot
+  see the real source of packets. All traffic seems to come from a single
+  source. No MAC address information, too (other than one of the router).
+
+### Peer - dumbhub (NAT) - Router
+
+```
+.----------.   .---------.   .--------.
+| ISP peer |---| dumbhub |---| Router |---> Internal network
+`----------'   `---------'   `--------'
+```
+
+In this pattern, the `dumbhub` performs NAT. WiFi interface is optional.
+
+Pros:
+
+* You have full access to packet information, including MAC and IP address.
+* WiFi interface is optional as the `dumbhub` has internal IP address.
+
+Cons:
+
+* The network topology must be changed: the router must not perform NAT.
+* When the `dumbhub` fails, you need another `dumbhub` for backup and replace
+  the failed one with the backup. Configurations must be identical and always
+  in sync.
+* When the `dumbhub` fails, and you do not have a backup `dumbhub`, you need
+  to re-configure the router setting, including NAT, and WAN interface
+  configuration, which means longer downtime.
+* In addition to packet analysing, the `dumbhub` uses more CPU and RAM for NAT,
+  which may require more powerful hardware.
+
+### Peer - Router (NAT) - dumbhub
+
+```
+.----------.   .--------.   .---------.   .-------------------.
+| ISP peer |---| Router |---| dumbhub |---| L2 switch/WiFi AP |---> Internal network
+`----------'   `--------'   `---------'   `-------------------'
+                                 |                  |
+                                 `------WiFi--------'
+```
+
+In this pattern, the router performs NAT. The `dumbhub` acts as L2 switch.
+
+Pros:
+
+* The network topology may be intact
+* You have full access to packet information, including MAC and IP address.
+* When the `dumbhub` fails, simply remove the `dumbhub`, and connect the L2
+  switch, or WiFi AP, to the router, which means shorter downtime.
+
+Cons:
+
+* You need additional L2 switch or WiFi AP, which is another failure point
+* As all clients use the other WiFi AP, WiFi interface of the router is not
+  used at all.
 
 ## Requirements
 
-### Requirements on Local machine
-
-* Unix machine
-* `ruby`
-* `bundler`
-* `ansible`
-* `vagrant`
-* `VirtualBox`
+* A machine with two ethernet ports, and WiFi interface (or three ethernet
+  ports). The WiFi interface can be optional (see Deployment patterns).
 
 ### Requirements on target machine
 
-* One of FreeBSD, OpenBSD, Ubuntu, and CentOS
-* Configured network interface
+* OS is Ubumtu 18.04 or its variants
+* Configured WiFi network interface
 * Configured `sshd`
 * A Unix account that can run `sudo(1)` as root
 * `python`
