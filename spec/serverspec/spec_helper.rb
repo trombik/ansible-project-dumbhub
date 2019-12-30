@@ -7,8 +7,8 @@ $LOAD_PATH.unshift(
   Pathname.new(File.dirname(__FILE__)).parent.parent + "ruby" + "lib"
 )
 
-Dir[File.dirname(__FILE__) + "/types/*.rb"].each { |f| require f }
-Dir[File.dirname(__FILE__) + "/shared_examples/*.rb"].each { |f| require f }
+Dir[File.dirname(__FILE__) + "/types/*.rb"].sort.each { |f| require f }
+Dir[File.dirname(__FILE__) + "/shared_examples/*.rb"].sort.each { |f| require f }
 
 host = ENV["TARGET_HOST"]
 
