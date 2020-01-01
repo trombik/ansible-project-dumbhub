@@ -15,4 +15,3 @@
     - role: interface_openbsd
       when: ansible_os_family == 'OpenBSD'
   vars:
-

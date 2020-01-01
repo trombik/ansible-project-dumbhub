@@ -111,7 +111,7 @@ Vagrant.configure("2") do |config|
         if inventory["all"]["hosts"][hostname].key?("vagrant_modifyvm")
           inventory["all"]["hosts"][hostname]["vagrant_modifyvm"].each do |m|
             c.vm.provider "virtualbox" do |virtualbox|
-              virtualbox.customize ["modifyvm", :id ] + m
+              virtualbox.customize ["modifyvm", :id] + m
             end
           end
         end
