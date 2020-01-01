@@ -42,6 +42,10 @@ trends, top talkers, protocols, etc.
 
 See more screenshots of `ntopng` at [the product page](https://www.ntop.org/products/traffic-analysis/ntop/).
 
+### `argus`
+
+![argus demo](assets/argus.png)
+
 ## Deployment patterns
 
 Depending on your constraints, there are different deployment patterns. Choose
