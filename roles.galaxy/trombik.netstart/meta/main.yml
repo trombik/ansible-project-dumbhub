@@ -1,0 +1,17 @@
+---
+galaxy_info:
+  author: Tomoyuki Sakurai
+  role_name: netstart
+  description: Manage hostname.if(5) and netstart(8)
+  company: N/A
+  license: MIT
+  min_ansible_version: 2.0
+  platforms:
+    - name: OpenBSD
+      versions:
+        - 6.4
+  galaxy_tags:
+    - openbsd
+    - netif
+    - netstart
+dependencies: []

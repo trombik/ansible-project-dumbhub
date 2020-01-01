@@ -1,0 +1,7 @@
+---
+
+- name: Restart netstart_service
+  command: "sh /etc/netstart {{ item['item']['name'] }} restart"
+  when:
+    - item['changed']
+  with_items: "{{ __netstart_result['results'] }}"
