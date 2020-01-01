@@ -10,8 +10,10 @@
   pre_tasks:
     - debug: var=hostvars[inventory_hostname]
   roles:
-    - role: trombik.netplan
-      when: ansible_os_family == 'Debian'
-    - role: interface_openbsd
-      when: ansible_os_family == 'OpenBSD'
+    - role: trombik.netstart
   vars:
+    netstart_config:
+      - name: em2
+        content: |
+          192.168.20.100/24
+          up
