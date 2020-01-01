@@ -3,7 +3,7 @@
 require_relative "../spec_helper"
 
 bridge_interface = "br0"
-physical_interfaces = ["eth2", "eth3"]
+physical_interfaces = %w[eth2 eth3]
 netplan_bridge_file = "/etc/netplan/60-bridge.yaml"
 
 describe file(netplan_bridge_file) do
