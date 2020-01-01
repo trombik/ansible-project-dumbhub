@@ -38,6 +38,12 @@ all:
     dumbhub:
       hosts:
         dumbhub.i.trombik.org:
+    router:
+      hosts:
+        client.i.trombik.org:
+    peer:
+      hosts:
+        peer.i.trombik.org:
     virtualbox_credentials:
       children:
         dumbhub:

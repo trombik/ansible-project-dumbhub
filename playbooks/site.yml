@@ -1,3 +1,5 @@
 ---
 
 - import_playbook: default.yml
+- import_playbook: router.yml
+- import_playbook: peer.yml
