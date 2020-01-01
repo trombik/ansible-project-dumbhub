@@ -30,7 +30,7 @@ trends, top talkers, protocols, etc.
   provides nice user interface
 * [x] [`argus`](https://openargus.org/) which analyzes packet flows,
   optionally export flow information to remote client
-* [ ] [`net-snmp`](http://www.net-snmp.org/) which exports interface metrics
+* [x] [`net-snmp`](http://www.net-snmp.org/) which exports interface metrics
 * [ ] [`dumpcap`](https://www.wireshark.org/docs/man-pages/dumpcap.html) which
   saves packets in `pcap` format
 
