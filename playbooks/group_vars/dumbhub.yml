@@ -18,6 +18,7 @@ ntopng_config: |
   --user={{ ntopng_user }}
   {% endif %}
   --http-port={{ project_ntopng_listen_address }}:3000
+  --disable-autologout
   --disable-login={{ project_ntopng_disable_login }}
   --community
   --interface={{ project_ntopng_interface }}
