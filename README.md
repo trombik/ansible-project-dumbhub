@@ -28,7 +28,7 @@ trends, top talkers, protocols, etc.
 
 * [x] [`ntopng`](https://www.ntop.org/products/traffic-analysis/ntop/) which
   provides nice user interface
-* [ ] [`argus`](https://openargus.org/) which analyzes packet flows,
+* [x] [`argus`](https://openargus.org/) which analyzes packet flows,
   optionally export flow information to remote client
 * [ ] [`net-snmp`](http://www.net-snmp.org/) which exports interface metrics
 * [ ] [`dumpcap`](https://www.wireshark.org/docs/man-pages/dumpcap.html) which
