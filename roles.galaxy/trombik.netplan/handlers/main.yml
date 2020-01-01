@@ -1,0 +1,9 @@
+---
+
+- name: Generate netplan
+  command: netplan generate
+  notify:
+    - Apply netplan
+
+- name: Apply netplan
+  command: netplan apply

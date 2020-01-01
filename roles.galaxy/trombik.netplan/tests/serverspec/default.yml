@@ -1,0 +1,49 @@
+---
+- hosts: localhost
+  roles:
+    - ansible-role-netplan
+  pre_tasks:
+    - name: Dump all hostvars
+      debug:
+        var: hostvars[inventory_hostname]
+  post_tasks:
+    - name: List all services (systemd)
+      # workaround ansible-lint: [303] service used in place of service module
+      shell: "echo; systemctl list-units --type service"
+      changed_when: false
+      when:
+        - ansible_os_family == 'RedHat' or ansible_os_family == 'Debian'
+    - name: list all services (FreeBSD service)
+      # workaround ansible-lint: [303] service used in place of service module
+      shell: "echo; service -l"
+      changed_when: false
+      when:
+        - ansible_os_family == 'FreeBSD'
+  vars:
+    netplan_clean_config: no
+    netplan_force_flush_handlers: yes
+    netplan_extra_packages:
+      - bridge-utils
+    netplan_config:
+      - name: 60-bridge.yaml
+        state: present
+        content:
+          network:
+            version: 2
+            renderer: networkd
+            ethernets:
+              eth1:
+                dhcp4: "no"
+                dhcp6: "no"
+              eth2:
+                dhcp4: "no"
+                dhcp6: "no"
+            bridges:
+              br0:
+                interfaces:
+                  - eth1
+                  - eth2
+                parameters:
+                  stp: "no"
+                dhcp4: "no"
+                dhcp6: "no"

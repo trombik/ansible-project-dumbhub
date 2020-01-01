@@ -1,0 +1,15 @@
+---
+galaxy_info:
+  author: Tomoyuki Sakurai
+  role_name: netplan
+  description: Configure netplan
+  company: N/A
+  license: MIT
+  min_ansible_version: 2.0
+  platforms:
+    - name: Ubuntu
+      versions:
+        - bionic
+  galaxy_tags:
+    - netplan
+dependencies: []

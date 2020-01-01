@@ -1,0 +1,7 @@
+---
+
+netplan_package: "{{ __netplan_package }}"
+netplan_extra_packages: []
+netplan_config_dir: "{{ __netplan_config_dir }}"
+netplan_config: []
+netplan_force_flush_handlers: no

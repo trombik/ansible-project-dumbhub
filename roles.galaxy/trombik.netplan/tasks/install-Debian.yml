@@ -1,0 +1,11 @@
+---
+
+- name: Install netplan_extra_packages
+  apt:
+    name: "{{ netplan_extra_packages }}"
+    state: present
+
+- name: Install netplan_package
+  apt:
+    name: "{{ netplan_package }}"
+    state: present
