@@ -11,3 +11,4 @@
 - name: trombik.netplan
 - name: trombik.netstart
 - name: trombik.argus
+- name: trombik.argus_clients
