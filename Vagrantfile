@@ -105,9 +105,7 @@ Vagrant.configure("2") do |config|
         end
         if inventory["all"]["hosts"][hostname].key?("vagrant_extra_networks")
           inventory["all"]["hosts"][hostname]["vagrant_extra_networks"].each do |n|
-            raise "#{hostname} does not have ipv4 as a key under vagrant_extra_networks" unless n.key?("ipv4")
-
-            c.vm.network "private_network", ip: n["ipv4"] if n.key?("ipv4")
+            c.vm.network "private_network", n.transform_keys(&:to_sym)
           end
         end
 

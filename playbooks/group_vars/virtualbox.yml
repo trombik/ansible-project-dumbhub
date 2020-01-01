@@ -14,3 +14,28 @@ project_ntopng_listen_address: "{{ os_project_ntopng_listen_address }}"
 
 # XXX disable login in testing environment. should be 1 in prod
 project_ntopng_disable_login: 1
+
+project_netplan_config:
+  - name: 60-bridge.yaml
+    state: present
+    content:
+      network:
+        version: 2
+        renderer: networkd
+        ethernets:
+          eth2:
+            dhcp4: "no"
+            dhcp6: "no"
+          eth3:
+            dhcp4: "no"
+            dhcp6: "no"
+        bridges:
+          br0:
+            interfaces:
+              - eth2
+              - eth3
+            parameters:
+              stp: "no"
+            dhcp4: "no"
+            dhcp6: "no"
+netplan_clean_config: no
