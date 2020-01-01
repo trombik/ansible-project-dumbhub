@@ -10,3 +10,4 @@
 - name: trombik.ntopng
 - name: trombik.netplan
 - name: trombik.netstart
+- name: trombik.argus
