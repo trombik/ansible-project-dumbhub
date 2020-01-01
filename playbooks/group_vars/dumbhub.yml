@@ -84,3 +84,15 @@ argus_config: |
   ARGUS_MIN_SSF=40
   ARGUS_MAX_SSF=128
   {% endif %}
+os_rastream_flags:
+  OpenBSD: ""
+  FreeBSD: ""
+  Debian: |
+    RASTREAM_OPTIONS="-S 127.0.0.1 -M time 1h -w {{ rastream_log_dir }}/%Y/%m/%d/%H.%M.%S.ra"
+  RedHat: |
+    RASTREAM_OPTIONS="-S 127.0.0.1 -M time 1h -w {{ rastream_log_dir }}/%Y/%m/%d/%H.%M.%S.ra"
+rastream_flags: "{{ os_rastream_flags[ansible_os_family] }}"
+rastream_package: ""
+rastream_user: "{{ argus_user }}"
+rastream_group: "{{ argus_group }}"
+rastream_log_dir: "{{ argus_log_dir }}/rastream"
