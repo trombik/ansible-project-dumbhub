@@ -47,3 +47,40 @@ redhat_repo:
 
 netplan_config: "{{ project_netplan_config }}"
 netplan_force_flush_handlers: yes
+
+os_argus_flags:
+  OpenBSD: "-F {{ argus_config_file }}"
+  FreeBSD: |
+    argus_flags='-F {{ argus_config_file }}'
+    argus_pidfile='/var/run/argus.{{ ansible_default_ipv4.device | default(omit) }}.*.pid'
+  Debian: |
+    ARGUS_OPTIONS="-F {{ argus_config_file }}"
+  RedHat: |
+    ARGUS_OPTIONS="-F {{ argus_config_file }}"
+argus_flags: "{{ os_argus_flags[ansible_os_family] }}"
+argus_config: |
+  ARGUS_FLOW_TYPE="Bidirectional"
+  ARGUS_FLOW_KEY="CLASSIC_5_TUPLE"
+  {% if ansible_os_family != 'Debian' and ansible_os_family != 'RedHat' %}
+  # XXX the unit file expects the command not to fork
+  ARGUS_DAEMON=yes
+  {% endif %}
+  ARGUS_ACCESS_PORT=561
+  ARGUS_BIND_IP="127.0.0.1"
+  ARGUS_INTERFACE={{ project_ntopng_interface }}
+  ARGUS_GO_PROMISCUOUS=yes
+  ARGUS_SETUSER_ID={{ argus_user }}
+  ARGUS_SETGROUP_ID={{ argus_group }}
+  ARGUS_FLOW_STATUS_INTERVAL=60
+  ARGUS_MAR_STATUS_INTERVAL=300
+  ARGUS_DEBUG_LEVEL=1
+  ARGUS_FILTER="ip"
+  ARGUS_SET_PID=yes
+  ARGUS_PID_PATH=/var/run
+  {% if ansible_os_family == 'FreeBSD' or ansible_os_family == 'OpenBSD' %}
+  # XXX enable only if ansible_os_family is either FreeBSD or OpenBSD.
+  # Ubuntu package is built without SASL (Build without sasl for now)
+  # http://changelogs.ubuntu.com/changelogs/pool/universe/a/argus/argus_3.0.8.2-1/changelog
+  ARGUS_MIN_SSF=40
+  ARGUS_MAX_SSF=128
+  {% endif %}
