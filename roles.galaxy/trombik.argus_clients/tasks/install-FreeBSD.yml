@@ -1,0 +1,11 @@
+---
+
+- name: Install argus_clients_extra_packages
+  pkgng:
+    name: "{{ argus_clients_extra_packages }}"
+    state: present
+
+- name: Install argus_clients_package
+  pkgng:
+    name: "{{ argus_clients_package }}"
+    state: present

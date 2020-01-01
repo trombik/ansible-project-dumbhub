@@ -1,0 +1,11 @@
+---
+
+- name: Install argus_clients_extra_packages
+  openbsd_pkg:
+    name: "{{ argus_clients_extra_packages }}"
+    state: present
+
+- name: Install argus_clients_package
+  openbsd_pkg:
+    name: "{{ argus_clients_package }}"
+    state: present
