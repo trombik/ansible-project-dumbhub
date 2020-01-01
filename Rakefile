@@ -143,15 +143,14 @@ task :dryrun do
   end
 end
 
-desc "all all tests; serverspec, integration, and rubocop"
+desc "all all tests; serverspec, and rubocop"
 task test: [
   # probably, each target deserves its own Jenkins stage. but for now, I would
   # like to merge the branch first. or, the branch history will mess up.
   "test:rubocop:all",
   :up,
   :provision,
-  "test:serverspec:all",
-  "test:integration:all"
+  "test:serverspec:all"
 ] do
 end
 
@@ -262,45 +261,6 @@ namespace :test do
       hosts = inventory.all_hosts_in(g)
       task g.to_sym => hosts.map { |h| "test:para:#{g}:#{h}" } do |_t|
         Process.waitall
-      end
-    end
-  end
-
-  namespace "integration" do
-    directories = Pathname.glob("spec/integration/[0-9][0-9][0-9]_*")
-    directories.each do |d|
-      desc "run integration spec #{d.basename}"
-      task d.basename.to_s do
-        vault_password_file = ENV["ANSIBLE_VAULT_PASSWORD_FILE"]
-        test_env = ansible_environment
-        Bundler.with_clean_env do
-          ENV["ANSIBLE_ENVIRONMENT"] = test_env
-          ENV["ANSIBLE_VAULT_PASSWORD_FILE"] = vault_password_file
-          configure_sudo_password_for(run_as_user)
-          sh "bundle exec rspec #{d}/*_spec.rb"
-        end
-      end
-    end
-    desc "Run integration test"
-    task :all do
-      # XXX run `bundler exec rspec` in a clean environment.
-      # the difference from running `rspec` in bundler environment is that:
-      # when invoking `rspec` within `with_clean_env`, the forked process can
-      # escape, or shellout, from the bundler environment.
-      #
-      # `rspec` is a different process. when you invoke `rspec` without
-      # `with_clean_env`, the bundler in `rspec` process keeps a copy of
-      # original environemnt and replace current environment with the copy when
-      # inside of `with_clean_env`. but because, in this case, the copied
-      # environment inherits the bundler environment of `rake`, the environment
-      # the process replaced is still bundler environment.
-      vault_password_file = ENV["ANSIBLE_VAULT_PASSWORD_FILE"]
-      test_env = ansible_environment
-      Bundler.with_clean_env do
-        ENV["ANSIBLE_ENVIRONMENT"] = test_env
-        ENV["ANSIBLE_VAULT_PASSWORD_FILE"] = vault_password_file
-        configure_sudo_password_for(run_as_user)
-        sh "bundle exec rspec spec/integration/**/*_spec.rb"
       end
     end
   end
