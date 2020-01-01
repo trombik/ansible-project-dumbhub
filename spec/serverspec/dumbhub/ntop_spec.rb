@@ -3,6 +3,7 @@
 require_relative "../spec_helper"
 
 service = "ntopng"
+interface_bridge = "br0"
 ports = [3000]
 config = case os[:family]
          when "freebsd"
@@ -30,5 +31,6 @@ context "after provision finishes" do
     when "prod"
       its(:content) { should match(/--disable-login=0/) }
     end
+    its(:content) { should match(/--interface=#{interface_bridge}/) }
   end
 end

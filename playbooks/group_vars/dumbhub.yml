@@ -19,6 +19,7 @@ ntopng_config: |
   {% endif %}
   --http-port={{ project_ntopng_listen_address }}:3000
   --disable-login={{ project_ntopng_disable_login }}
+  --interface={{ project_ntopng_interface }}
 apt_repo_keys_to_add:
   - http://packages.ntop.org/apt-stable/ntop.key
 apt_repo_to_add:
@@ -41,3 +42,6 @@ redhat_repo:
     enabled: yes
     gpgcheck: yes
     gpgkey: http://packages.ntop.org/centos-stable/RPM-GPG-KEY-deri
+
+netplan_config: "{{ project_netplan_config }}"
+netplan_force_flush_handlers: yes
