@@ -5,10 +5,35 @@ all:
       vagrant_priority: 11
       ansible_host: 172.16.100.200
       vagrant_extra_networks:
+        # XXX auto_config is false because the interface does not need an IP
+        # address. but Vagrant requires IP address to identify the network
         - auto_config: false
           ip: 192.168.20.200
         - auto_config: false
           ip: 192.168.21.200
+      vagrant_modifyvm:
+        - ["--nicpromisc3", "allow-all"]
+        - ["--nicpromisc4", "allow-all"]
+    client.i.trombik.org:
+      vagrant_priority: 10
+      ansible_host: 172.16.100.100
+      vagrant_extra_networks:
+        # XXX here, auto_config is false because if auto_config is enabled,
+        # the interface will be connected to a private network, which bypasses
+        # the bridge interface.
+        - auto_config: false
+          ip: 192.168.21.200
+      vagrant_modifyvm:
+        - ["--nicpromisc3", "allow-all"]
+    peer.i.trombik.org:
+      vagrant_priority: 10
+      ansible_host: 172.16.100.101
+      vagrant_box: trombik/ansible-openbsd-6.6-amd64
+      vagrant_extra_networks:
+        - auto_config: false
+          ip: 192.168.20.200
+      vagrant_modifyvm:
+        - ["--nicpromisc3", "allow-all"]
   children:
     dumbhub:
       hosts:

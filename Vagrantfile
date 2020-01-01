@@ -108,6 +108,13 @@ Vagrant.configure("2") do |config|
             c.vm.network "private_network", n.transform_keys(&:to_sym)
           end
         end
+        if inventory["all"]["hosts"][hostname].key?("vagrant_modifyvm")
+          inventory["all"]["hosts"][hostname]["vagrant_modifyvm"].each do |m|
+            c.vm.provider "virtualbox" do |virtualbox|
+              virtualbox.customize ["modifyvm", :id ] + m
+            end
+          end
+        end
 
         c.vm.provision :ansible do |ansible|
           python_path = case c.vm.box
