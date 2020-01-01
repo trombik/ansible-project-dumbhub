@@ -23,4 +23,5 @@
     - role: trombik.ntopng
     - role: trombik.argus
     - role: trombik.argus_clients
+    - role: trombik.rastream
   vars:
