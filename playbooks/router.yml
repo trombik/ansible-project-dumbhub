@@ -1,0 +1,31 @@
+---
+
+- hosts: router
+  become: yes
+  become_method: sudo
+  environment:
+    http_proxy: "{{ http_proxy | default() }}"
+    https_proxy: "{{ https_proxy | default() }}"
+    no_proxy: "{{ no_proxy | default() }}"
+
+  pre_tasks:
+    - debug: var=hostvars[inventory_hostname]
+  roles:
+    - role: trombik.netplan
+      when: ansible_os_family == 'Debian'
+  vars:
+    netplan_clean_config: no
+    netplan_config:
+      - name: 60-eth2.yaml
+        state: present
+        content:
+          network:
+            version: 2
+            renderer: networkd
+            ethernets:
+              eth2:
+                dhcp4: "no"
+                dhcp6: "no"
+                addresses:
+                  - 192.168.20.101/24
+

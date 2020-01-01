@@ -1,0 +1,4 @@
+---
+
+- name: Restart em2
+  command: "sh /etc/netstart restart em2"
