@@ -1,0 +1,6 @@
+---
+
+- name: Install netstart_extra_packages
+  openbsd_pkg:
+    name: "{{ netstart_extra_packages }}"
+    state: present

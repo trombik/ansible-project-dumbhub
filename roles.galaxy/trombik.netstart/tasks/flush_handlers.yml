@@ -1,0 +1,4 @@
+---
+
+- name: Do flush_handlers
+  meta: flush_handlers
