@@ -13,3 +13,4 @@
 - name: trombik.argus
 - name: trombik.argus_clients
 - name: trombik.rastream
+- name: trombik.net_snmp
