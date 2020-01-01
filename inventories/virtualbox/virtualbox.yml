@@ -4,6 +4,11 @@ all:
     dumbhub.i.trombik.org:
       vagrant_priority: 11
       ansible_host: 172.16.100.200
+      vagrant_extra_networks:
+        - auto_config: false
+          ip: 192.168.20.200
+        - auto_config: false
+          ip: 192.168.21.200
   children:
     dumbhub:
       hosts:
