@@ -24,6 +24,9 @@ the network, or so that you can see trend of bandwidth. But your router is a
 consumer product without advanced monitoring features. You would like to see
 trends, top talkers, protocols, etc.
 
+You would like to monitor traffic, but you cannot modify router
+configuration nor network topology.
+
 ## Features
 
 * [x] [`ntopng`](https://www.ntop.org/products/traffic-analysis/ntop/) which
