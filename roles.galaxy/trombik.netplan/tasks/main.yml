@@ -1,0 +1,45 @@
+---
+
+- name: "Include vars/{{ ansible_os_family }}.yml"
+  include_vars: "{{ ansible_os_family }}.yml"
+
+- name: "Include install-{{ ansible_os_family }}.yml"
+  include: "install-{{ ansible_os_family }}.yml"
+
+- name: Find netplan configuration file that are not managed by the role
+  find:
+    path: "{{ netplan_config_dir }}"
+    pattern: "*.yml,*.yaml"
+  register: __netplan_not_managed_files
+
+- name: Remove unmanaged netplan files
+  file:
+    path: "{{ item['path'] }}"
+    state: absent
+  with_items: "{{ __netplan_not_managed_files }}"
+  when:
+    - netplan_clean_config
+  notify: Generate netplan
+
+- name: Remove netplan_config
+  file:
+    path: "{{ netplan_config_dir }}/{{ item['name'] }}"
+    state: absent
+  with_items: "{{ netplan_config }}"
+  when:
+    - item['state'] == 'absent'
+  notify: Generate netplan
+
+- name: Create netplan_config
+  template:
+    src: netplan.yaml.j2
+    dest: "{{ netplan_config_dir }}/{{ item['name'] }}"
+  with_items: "{{ netplan_config }}"
+  when:
+    - item['state'] == 'present'
+  notify: Generate netplan
+
+- name: Include flush_handlers.yml
+  include_tasks: flush_handlers.yml
+  when:
+    - netplan_force_flush_handlers

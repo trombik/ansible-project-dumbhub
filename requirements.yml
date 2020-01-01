@@ -8,3 +8,4 @@
 - name: trombik.tmux
 - name: trombik.apt_repo
 - name: trombik.ntopng
+- name: trombik.netplan
