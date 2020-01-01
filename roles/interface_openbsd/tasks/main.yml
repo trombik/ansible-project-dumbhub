@@ -1,9 +1,0 @@
----
-
-- name: Create hostname.em2
-  copy:
-    dest: /etc/hostname.em2
-    content: |
-      192.168.20.100/24
-      up
-  notify: Restart em2
