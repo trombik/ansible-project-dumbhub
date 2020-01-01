@@ -19,6 +19,7 @@ ntopng_config: |
   {% endif %}
   --http-port={{ project_ntopng_listen_address }}:3000
   --disable-login={{ project_ntopng_disable_login }}
+  --community
   --interface={{ project_ntopng_interface }}
 apt_repo_keys_to_add:
   - http://packages.ntop.org/apt-stable/ntop.key

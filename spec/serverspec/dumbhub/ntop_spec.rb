@@ -32,5 +32,6 @@ context "after provision finishes" do
       its(:content) { should match(/--disable-login=0/) }
     end
     its(:content) { should match(/--interface=#{interface_bridge}/) }
+    its(:content) { should match(/--community/) }
   end
 end
