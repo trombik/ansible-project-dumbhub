@@ -28,8 +28,10 @@ context "after provision finishes" do
     case ENV["ANSIBLE_ENVIRONMENT"]
     when "virtualbox"
       its(:content) { should match(/--disable-login=1/) }
+      its(:content) { should match(/--disable-autologout/) }
     when "prod"
       its(:content) { should match(/--disable-login=0/) }
+      its(:content) { should_not match(/--disable-autologout/) }
     end
     its(:content) { should match(/--interface=#{interface_bridge}/) }
     its(:content) { should match(/--community/) }
