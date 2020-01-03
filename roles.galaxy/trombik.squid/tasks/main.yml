@@ -1,0 +1,42 @@
+---
+# tasks file for ansible-role-squid
+
+- include_vars: "{{ ansible_os_family }}.yml"
+
+- include: "install-{{ ansible_os_family }}.yml"
+
+- include: "configure-{{ ansible_os_family }}.yml"
+
+- name: Create log directory
+  file:
+    path: "{{ squid_log_dir }}"
+    mode: 0755
+    owner: "{{ squid_user }}"
+    group: "{{ squid_group }}"
+    state: directory
+  notify: Restart squid
+
+- name: Create squid_cache_dir directory
+  file:
+    path: "{{ squid_cache_dir }}"
+    mode: 0750
+    owner: "{{ squid_user }}"
+    group: "{{ squid_group }}"
+    state: directory
+  notify: Restart squid
+
+- name: Create squid.conf
+  template:
+    src: squid.conf.j2
+    dest: "{{ squid_conf_file }}"
+  notify: Restart squid
+
+- name: Create cache hier
+  command: "{{ squid_bin }} -z"
+  args:
+    creates: "{{ squid_cache_dir }}/00"
+
+- name: Start squid
+  service:
+    name: "{{ squid_service }}"
+    state: started

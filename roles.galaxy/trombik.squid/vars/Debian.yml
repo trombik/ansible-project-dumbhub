@@ -1,0 +1,11 @@
+---
+__squid_user: proxy
+__squid_group: proxy
+__squid_package: "{% if ansible_distribution == 'Debian' %}squid3{% else %}squid{% endif %}"
+__squid_service: "{{ __squid_package }}"
+__squid_bin: "{{ __squid_package }}"
+__squid_cache_dir: "/var/spool/{{ __squid_package }}"
+__squid_conf_dir: "/etc/{{ __squid_package }}"
+__squid_coredump_dir: "/var/spool/{{ __squid_package }}"
+__squid_log_dir: "/var/log/{{ __squid_package }}"
+__squid_flags: -YC -f $CONFIG

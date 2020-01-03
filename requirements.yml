@@ -15,3 +15,4 @@
 - name: trombik.rastream
 - name: trombik.net_snmp
 - name: trombik.dumpcap
+- name: trombik.squid
