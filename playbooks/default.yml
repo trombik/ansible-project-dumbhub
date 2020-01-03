@@ -26,4 +26,5 @@
     - role: trombik.rastream
     - role: trombik.net_snmp
     - role: trombik.dumpcap
+    - role: trombik.squid
   vars:
