@@ -1,4 +1,8 @@
 ---
+
+# __________________________________________ntopng
+project_ntopng_interface: "{{ project_bridge_interface }}"
+project_ntopng_listen_address: "{{ project_internal_ipv4_address }}"
 os_ntopng_extra_packages:
   FreeBSD: []
   OpenBSD: []
@@ -22,32 +26,9 @@ ntopng_config: |
   --disable-login={{ project_ntopng_disable_login }}
   --community
   --interface={{ project_ntopng_interface }}
-apt_repo_keys_to_add:
-  - http://packages.ntop.org/apt-stable/ntop.key
-apt_repo_to_add:
-  - deb http://packages.ntop.org/apt-stable/{{ ansible_distribution_version }}/ x64/
-  - deb http://packages.ntop.org/apt-stable/{{ ansible_distribution_version }}/ all/
-redhat_repo_extra_packages:
-  - epel-release
-redhat_repo:
-  epel:
-    mirrorlist: "http://mirrors.fedoraproject.org/mirrorlist?repo=epel-{{ ansible_distribution_major_version }}&arch={{ ansible_architecture }}"
-    gpgcheck: yes
-    enabled: yes
-  ntop:
-    baseurl: http://packages.ntop.org/centos-stable/$releasever/$basearch/
-    enabled: yes
-    gpgcheck: yes
-    gpgkey: http://packages.ntop.org/centos-stable/RPM-GPG-KEY-deri
-  ntop_noarch:
-    baseurl: http://packages.ntop.org/centos-stable/$releasever/noarch/
-    enabled: yes
-    gpgcheck: yes
-    gpgkey: http://packages.ntop.org/centos-stable/RPM-GPG-KEY-deri
 
-netplan_config: "{{ project_netplan_config }}"
-netplan_force_flush_handlers: yes
-
+# __________________________________________argus
+project_argus_interface: "{{ project_bridge_interface }}"
 os_argus_flags:
   OpenBSD: "-F {{ argus_config_file }}"
   FreeBSD: |
@@ -61,13 +42,9 @@ argus_flags: "{{ os_argus_flags[ansible_os_family] }}"
 argus_config: |
   ARGUS_FLOW_TYPE="Bidirectional"
   ARGUS_FLOW_KEY="CLASSIC_5_TUPLE"
-  {% if ansible_os_family != 'Debian' and ansible_os_family != 'RedHat' %}
-  # XXX the unit file expects the command not to fork
-  ARGUS_DAEMON=yes
-  {% endif %}
   ARGUS_ACCESS_PORT=561
   ARGUS_BIND_IP="127.0.0.1"
-  ARGUS_INTERFACE={{ project_ntopng_interface }}
+  ARGUS_INTERFACE={{ project_argus_interface }}
   ARGUS_GO_PROMISCUOUS=yes
   ARGUS_SETUSER_ID={{ argus_user }}
   ARGUS_SETGROUP_ID={{ argus_group }}
@@ -84,6 +61,10 @@ argus_config: |
   ARGUS_MIN_SSF=40
   ARGUS_MAX_SSF=128
   {% endif %}
+  {% if ansible_os_family != 'Debian' and ansible_os_family != 'RedHat' %}
+  # XXX the unit file expects the command not to fork
+  ARGUS_DAEMON=yes
+  {% endif %}
 os_rastream_flags:
   OpenBSD: ""
   FreeBSD: ""
@@ -98,6 +79,7 @@ rastream_group: "{{ argus_group }}"
 rastream_log_dir: "{{ argus_log_dir }}/rastream"
 
 # __________________________________________net-snmp
+project_net_snmp_listen_address: "{{ project_internal_ipv4_address }}"
 os_net_snmp_extra_packages:
   FreeBSD: []
   OpenBSD: []
@@ -128,18 +110,18 @@ net_snmp_config: |
 net_snmp_snmptrapd_service_enable: no
 
 # __________________________________________dumpcap
-
+project_dumpcap_interface: "{{ project_bridge_interface }}"
 os_dumpcap_flags:
   # translation: write output to files with ring buffer mode, 10 files,
   # 60 sec per file. capture filiter is `ip`. the output files should be
   # group-readable. do not display the continuous count of packets.
   # output file name is `/var/log/dumpcap/dumpcap_00001_20190714120117
-  OpenBSD: "-b interval:60 -b files:10 -f ip -g -i {{ project_ntopng_interface }} -q -w {{ dumpcap_log_dir }}/dumpcap"
+  OpenBSD: "-b interval:60 -b files:10 -f ip -g -i {{ project_dumpcap_interface }} -q -w {{ dumpcap_log_dir }}/dumpcap"
   FreeBSD: |
     dumpcap_user='{{ dumpcap_user }}'
-    dumpcap_args='-b interval:60 -b files:10 -f ip -g -i {{ project_ntopng_interface }} -q -w {{ dumpcap_log_dir }}/dumpcap'
+    dumpcap_args='-b interval:60 -b files:10 -f ip -g -i {{ project_dumpcap_interface }} -q -w {{ dumpcap_log_dir }}/dumpcap'
   Debian: |
-    DUMPCAP_FLAGS='-b interval:60 -b files:10 -f ip -g -i {{ project_ntopng_interface }} -q -w {{ dumpcap_log_dir }}/dumpcap'
+    DUMPCAP_FLAGS='-b interval:60 -b files:10 -f ip -g -i {{ project_dumpcap_interface }} -q -w {{ dumpcap_log_dir }}/dumpcap'
   RedHat: ""
 dumpcap_flags: "{{ os_dumpcap_flags[ansible_os_family] }}"
 
@@ -151,8 +133,8 @@ os_dumpcap_extra_package:
   RedHat: []
 dumpcap_extra_packages: "{{ os_dumpcap_extra_package[ansible_os_family] }}"
 
-project_squid_listen_address: "{{ project_ntopng_listen_address }}"
 # __________________________________________squid
+project_squid_listen_address: "{{ project_internal_ipv4_address }}"
 os_squid_flags:
   FreeBSD: |
     squid_flags="-u 3180"
@@ -188,3 +170,33 @@ squid_config: |
   cache_dir ufs {{ squid_cache_dir }} 100 16 256
   coredump_dir {{ squid_coredump_dir }}
 squid_selinux_port_udp: [3401, 4827, 3180]
+
+# __________________________________________repositories
+apt_repo_keys_to_add:
+  - http://packages.ntop.org/apt-stable/ntop.key
+apt_repo_to_add:
+  - deb http://packages.ntop.org/apt-stable/{{ ansible_distribution_version }}/ x64/
+  - deb http://packages.ntop.org/apt-stable/{{ ansible_distribution_version }}/ all/
+redhat_repo_extra_packages:
+  - epel-release
+redhat_repo:
+  epel:
+    mirrorlist: "http://mirrors.fedoraproject.org/mirrorlist?repo=epel-{{ ansible_distribution_major_version }}&arch={{ ansible_architecture }}"
+    gpgcheck: yes
+    enabled: yes
+  ntop:
+    baseurl: http://packages.ntop.org/centos-stable/$releasever/$basearch/
+    enabled: yes
+    gpgcheck: yes
+    gpgkey: http://packages.ntop.org/centos-stable/RPM-GPG-KEY-deri
+  ntop_noarch:
+    baseurl: http://packages.ntop.org/centos-stable/$releasever/noarch/
+    enabled: yes
+    gpgcheck: yes
+    gpgkey: http://packages.ntop.org/centos-stable/RPM-GPG-KEY-deri
+
+# __________________________________________bridge
+
+# use netplan on Linux platforms
+netplan_config: "{{ project_netplan_config }}"
+netplan_force_flush_handlers: yes
