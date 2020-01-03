@@ -1,0 +1,47 @@
+---
+
+- name: Install net_snmp_extra_packages
+  yum:
+    name: "{{ net_snmp_extra_packages }}"
+    state: present
+
+- name: Install net_snmp_package
+  yum:
+    name: "{{ net_snmp_package }}"
+    state: present
+
+- name: Enable net_snmp_snmptrapd_service
+  service:
+    name: "{{ net_snmp_snmptrapd_service }}"
+    enabled: yes
+  when:
+    - net_snmp_snmptrapd_service_enable
+
+- name: Enable net_snmp_service
+  service:
+    name: "{{ net_snmp_service }}"
+    enabled: yes
+
+- name: "Create /etc/sysconfig/{{ net_snmp_service }}"
+  template:
+    src: RedHat.sysconfig.j2
+    dest: "/etc/sysconfig/{{ net_snmp_service }}"
+    mode: 0644
+    # keep the original copy in case you need the defaults in it
+    backup: yes
+    validate: sh -n %s
+  notify:
+    - Restart net_snmp_service
+
+- name: "Create /etc/sysconfig/{{ net_snmp_snmptrapd_service }}"
+  template:
+    src: RedHat.sysconfig.snmptrapd.j2
+    dest: "/etc/sysconfig/{{ net_snmp_snmptrapd_service }}"
+    mode: 0644
+    # keep the original copy in case you need the defaults in it
+    backup: yes
+    validate: sh -n %s
+  notify:
+    - Restart net_snmp_snmptrapd_service
+  when:
+    - net_snmp_snmptrapd_service_enable

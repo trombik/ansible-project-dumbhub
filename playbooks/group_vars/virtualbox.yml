@@ -9,15 +9,38 @@ hosts_enable_localhost: yes
 hosts_extra_localhosts:
   - "{{ inventory_hostname }}"
 
-os_project_ntopng_listen_address: "{% if ansible_os_family == 'Debian' %}{{ ansible_eth1['ipv4']['address'] }}{% endif %}"
-project_ntopng_listen_address: "{{ os_project_ntopng_listen_address }}"
+# This is the interface of the bridge, thorough which all packets from/to the
+# internal network pass.
+os_project_bridge_interface:
+  FreeBSD: bridge0
+  OpenBSD: bridge0
+  Debian: br0
+  RedHat: br0
+project_bridge_interface: "{{ os_project_bridge_interface[ansible_os_family] }}"
 
-# XXX disable login in testing environment. should be 1 in prod
+# This is the interface used for listening access from internal network.
+os_project_internal_interface:
+  FreeBSD: wlan0
+  OpenBSD: urtwn0
+  Debian: wlan0
+  RedHat: wlan0
+project_internal_interface: "{{ os_project_internal_interface[ansible_os_family] }}"
+
+# This is the address of project_internal_interface. Services for clients in
+# the internal network should listen on this address.
+os_project_internal_ipv4_address:
+  FreeBSD: ""
+  OpenBSD: ""
+  Debian: "{{ ansible_eth1['ipv4']['address'] }}"
+  RedHat: ""
+project_internal_ipv4_address: "{{ os_project_internal_ipv4_address[ansible_os_family] }}"
+
+# XXX disable login in testing environment. disable authentication when 1,
+# enable authentication when 0.
 project_ntopng_disable_login: 1
-project_ntopng_interface: br0
 
 # XXX to use a variable as a key in a dict, the entire dict must be defined as
-# a string. here, project_ntopng_interface is used as a key. the string is
+# a string. here, project_bridge_interface is used as a key. the string is
 # evaluated as a json, and ansible convert the string to a dict.
 #
 # see https://github.com/ansible/ansible/issues/17324
@@ -37,7 +60,7 @@ project_netplan_br0: |
           }
       },
       "bridges": {
-        "{{ project_ntopng_interface }}": {
+        "{{ project_bridge_interface }}": {
           "interfaces":
             [ "eth2", "eth3" ],
           "parameters": {
@@ -54,4 +77,6 @@ project_netplan_config:
     content: "{{ project_netplan_br0 }}"
     state: present
 
-netplan_clean_config: no
+# in Virtulbox, existing configuration files are required for the box to
+# function.
+project_netplan_clean_config: no

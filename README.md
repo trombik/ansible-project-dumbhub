@@ -24,15 +24,19 @@ the network, or so that you can see trend of bandwidth. But your router is a
 consumer product without advanced monitoring features. You would like to see
 trends, top talkers, protocols, etc.
 
+You would like to monitor traffic, but you cannot modify router
+configuration nor network topology.
+
 ## Features
 
 * [x] [`ntopng`](https://www.ntop.org/products/traffic-analysis/ntop/) which
   provides nice user interface
 * [x] [`argus`](https://openargus.org/) which analyzes packet flows,
   optionally export flow information to remote client
-* [ ] [`net-snmp`](http://www.net-snmp.org/) which exports interface metrics
-* [ ] [`dumpcap`](https://www.wireshark.org/docs/man-pages/dumpcap.html) which
+* [x] [`net-snmp`](http://www.net-snmp.org/) which exports interface metrics
+* [x] [`dumpcap`](https://www.wireshark.org/docs/man-pages/dumpcap.html) which
   saves packets in `pcap` format
+* [x] [`squid`] which provides HTTP proxy
 
 ## Screenshots
 
