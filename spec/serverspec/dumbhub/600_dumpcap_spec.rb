@@ -4,11 +4,11 @@ require_relative "../spec_helper"
 
 process = "dumpcap"
 extra_packages = case os[:family]
-                when "ubuntu"
-                  %w[tshark]
-                else
-                  []
-                end
+                 when "ubuntu"
+                   %w[tshark]
+                 else
+                   []
+                 end
 
 describe process(process) do
   it { should be_running }
