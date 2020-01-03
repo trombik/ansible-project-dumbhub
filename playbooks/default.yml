@@ -25,4 +25,5 @@
     - role: trombik.argus_clients
     - role: trombik.rastream
     - role: trombik.net_snmp
+    - role: trombik.dumpcap
   vars:
