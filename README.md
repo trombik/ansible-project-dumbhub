@@ -34,8 +34,9 @@ configuration nor network topology.
 * [x] [`argus`](https://openargus.org/) which analyzes packet flows,
   optionally export flow information to remote client
 * [x] [`net-snmp`](http://www.net-snmp.org/) which exports interface metrics
-* [ ] [`dumpcap`](https://www.wireshark.org/docs/man-pages/dumpcap.html) which
+* [x] [`dumpcap`](https://www.wireshark.org/docs/man-pages/dumpcap.html) which
   saves packets in `pcap` format
+* [x] [`squid`] which provides HTTP proxy
 
 ## Screenshots
 
