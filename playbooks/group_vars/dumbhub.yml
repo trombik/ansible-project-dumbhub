@@ -113,8 +113,8 @@ os_net_snmp_flags:
     snmpd_conffile="{{ net_snmp_config_file }}"
   OpenBSD: "-u _netsnmp -r -a"
   Debian: |
-    SNMPDOPTS='-Lsd -Lf /dev/null -u Debian-snmp -g Debian-snmp -I -smux,mteTrigger,mteTriggerConf -p /run/snmpd.pid"
-    SNMPDRUN=yes
+    MIBSDIR=/usr/share/snmp/mibs:/usr/share/snmp/mibs/iana:/usr/share/snmp/mibs/ietf:/usr/share/mibs/site:/usr/share/snmp/mibs:/usr/share/mibs/iana:/usr/share/mibs/ietf:/usr/share/mibs/netsnmp
+    MIB=""
   RedHat: |
     OPTIONS="-LS0-6d"
 
@@ -123,6 +123,30 @@ net_snmp_config: |
   syscontact root
   syslocation "somewhere"
   rocommunity public
-  agentAddress  udp:{{ project_ntopng_listen_address }}:161
+  agentAddress  udp:{{ project_net_snmp_listen_address }}:161
   mibs :
 net_snmp_snmptrapd_service_enable: no
+
+# __________________________________________dumpcap
+
+os_dumpcap_flags:
+  # translation: write output to files with ring buffer mode, 10 files,
+  # 60 sec per file. capture filiter is `ip`. the output files should be
+  # group-readable. do not display the continuous count of packets.
+  # output file name is `/var/log/dumpcap/dumpcap_00001_20190714120117
+  OpenBSD: "-b interval:60 -b files:10 -f ip -g -i {{ project_ntopng_interface }} -q -w {{ dumpcap_log_dir }}/dumpcap"
+  FreeBSD: |
+    dumpcap_user='{{ dumpcap_user }}'
+    dumpcap_args='-b interval:60 -b files:10 -f ip -g -i {{ project_ntopng_interface }} -q -w {{ dumpcap_log_dir }}/dumpcap'
+  Debian: |
+    DUMPCAP_FLAGS='-b interval:60 -b files:10 -f ip -g -i {{ project_ntopng_interface }} -q -w {{ dumpcap_log_dir }}/dumpcap'
+  RedHat: ""
+dumpcap_flags: "{{ os_dumpcap_flags[ansible_os_family] }}"
+
+os_dumpcap_extra_package:
+  OpenBSD: []
+  FreeBSD: []
+  Debian:
+    - tshark
+  RedHat: []
+dumpcap_extra_packages: "{{ os_dumpcap_extra_package[ansible_os_family] }}"

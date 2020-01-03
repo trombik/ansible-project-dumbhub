@@ -14,7 +14,12 @@ project_ntopng_listen_address: "{{ os_project_ntopng_listen_address }}"
 
 # XXX disable login in testing environment. should be 1 in prod
 project_ntopng_disable_login: 1
-project_ntopng_interface: br0
+os_project_ntopng_interface:
+  FreeBSD: bridge0
+  OpenBSD: vether0
+  Debian: br0
+  RedHat: br0
+project_ntopng_interface: "{{ os_project_ntopng_interface[ansible_os_family] }}"
 
 # XXX to use a variable as a key in a dict, the entire dict must be defined as
 # a string. here, project_ntopng_interface is used as a key. the string is
@@ -55,3 +60,4 @@ project_netplan_config:
     state: present
 
 netplan_clean_config: no
+project_net_snmp_listen_address: "{{ project_ntopng_listen_address }}"
