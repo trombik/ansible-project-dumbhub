@@ -1,0 +1,14 @@
+---
+
+- name: Install squid
+  openbsd_pkg:
+    name: "{{ squid_package }}"
+    state: present
+
+- name: Enable squid_service
+  service:
+    name: "{{ squid_service }}"
+    enabled: yes
+    arguments: "{{ squid_flags }}"
+  notify:
+    - Restart squid
