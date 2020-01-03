@@ -79,4 +79,4 @@ project_netplan_config:
 
 # in Virtulbox, existing configuration files are required for the box to
 # function.
-netplan_clean_config: no
+project_netplan_clean_config: no
