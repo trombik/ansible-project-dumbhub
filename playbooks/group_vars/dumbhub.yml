@@ -200,3 +200,4 @@ redhat_repo:
 # use netplan on Linux platforms
 netplan_config: "{{ project_netplan_config }}"
 netplan_force_flush_handlers: yes
+netplan_clean_config: "{{ project_netplan_clean_config }}"
