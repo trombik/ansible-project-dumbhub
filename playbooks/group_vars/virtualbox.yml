@@ -80,3 +80,9 @@ project_netplan_config:
 # in Virtulbox, existing configuration files are required for the box to
 # function.
 project_netplan_clean_config: no
+
+project_apt_repo_keys_to_add:
+  - http://packages.ntop.org/apt-stable/ntop.key
+project_apt_repo_to_add:
+  - deb http://packages.ntop.org/apt-stable/{{ ansible_distribution_version }}/ x64/
+  - deb http://packages.ntop.org/apt-stable/{{ ansible_distribution_version }}/ all/

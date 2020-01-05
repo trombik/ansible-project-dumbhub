@@ -4,7 +4,85 @@ hosts_map: "{
   '{{ ansible_wlan0.ipv4.address }}': ['{{ inventory_hostname }}']
 }"
 
-hostname_fqdn: "{% if ansible_os_family == 'Debian' %}{{ inventory_hostname.split('.') | first }}{% else %}{{ inventory_hostname }}{% endif %}"
+project_fqdn: "{{ inventory_hostname }}"
+project_fqdn_short: "{{ project_fqdn.split('.') | first }}"
+hostname_fqdn: "{{ project_fqdn }}"
 hosts_enable_localhost: yes
 hosts_extra_localhosts:
-  - "{{ inventory_hostname }}"
+  - "{{ project_fqdn }}"
+  - "{{ project_fqdn_short }}"
+
+# This is the interface of the bridge, thorough which all packets from/to the
+# internal network pass.
+os_project_bridge_interface:
+  FreeBSD: bridge0
+  OpenBSD: bridge0
+  Debian: br0
+  RedHat: br0
+project_bridge_interface: "{{ os_project_bridge_interface[ansible_os_family] }}"
+
+# This is the interface used for listening access from internal network.
+os_project_internal_interface:
+  FreeBSD: wlan0
+  OpenBSD: urtwn0
+  Debian: wlan0
+  RedHat: wlan0
+project_internal_interface: "{{ os_project_internal_interface[ansible_os_family] }}"
+
+# This is the address of project_internal_interface. Services for clients in
+# the internal network should listen on this address.
+os_project_internal_ipv4_address:
+  FreeBSD: ""
+  OpenBSD: ""
+  Debian: "{{ ansible_wlan0['ipv4']['address'] }}"
+  RedHat: ""
+project_internal_ipv4_address: "{{ os_project_internal_ipv4_address[ansible_os_family] }}"
+
+# XXX disable login in testing environment. disable authentication when 1,
+# enable authentication when 0.
+project_ntopng_disable_login: 1
+
+# XXX to use a variable as a key in a dict, the entire dict must be defined as
+# a string. here, project_bridge_interface is used as a key. the string is
+# evaluated as a json, and ansible convert the string to a dict.
+#
+# see https://github.com/ansible/ansible/issues/17324
+project_netplan_br0: |
+  {
+    "network": {
+      "version": "2",
+      "renderer": "NetworkManager",
+      "ethernets": {
+        "eth0": {
+          "dhcp4": "no",
+          "dhcp6": "no"
+        },
+        "enxc0742bfffb23": {
+          "dhcp4": "no",
+          "dhcp6": "no"
+          }
+      },
+      "bridges": {
+        "{{ project_bridge_interface }}": {
+          "interfaces":
+            [ "eth0", "enxc0742bfffb23" ],
+          "parameters": {
+            "stp": "no"
+          },
+          "dhcp4": "no",
+          "dhcp6": "no"
+        }
+      }
+    }
+  }
+project_netplan_config:
+  - name: 60-bridge.yaml
+    content: "{{ project_netplan_br0 }}"
+    state: present
+
+# in Virtulbox, existing configuration files are required for the box to
+# function.
+project_netplan_clean_config: no
+
+project_apt_repo_keys_to_add: []
+project_apt_repo_to_add: []

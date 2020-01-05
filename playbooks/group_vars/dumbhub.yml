@@ -7,11 +7,9 @@ os_ntopng_extra_packages:
   FreeBSD: []
   OpenBSD: []
   Debian:
-    - pfring
     - ntopng-data
     - net-tools
   RedHat:
-    - pfring
     - ntopng-data
     - net-tools
 ntopng_extra_packages: "{{ os_ntopng_extra_packages[ansible_os_family] }}"
@@ -172,11 +170,8 @@ squid_config: |
 squid_selinux_port_udp: [3401, 4827, 3180]
 
 # __________________________________________repositories
-apt_repo_keys_to_add:
-  - http://packages.ntop.org/apt-stable/ntop.key
-apt_repo_to_add:
-  - deb http://packages.ntop.org/apt-stable/{{ ansible_distribution_version }}/ x64/
-  - deb http://packages.ntop.org/apt-stable/{{ ansible_distribution_version }}/ all/
+apt_repo_keys_to_add: "{{ project_apt_repo_keys_to_add }}"
+apt_repo_to_add: "{{ project_apt_repo_to_add }}"
 redhat_repo_extra_packages:
   - epel-release
 redhat_repo:
