@@ -15,7 +15,7 @@ describe uri do
 
   it "should return success" do
     expect(http_get_response).to be_kind_of(Net::HTTPSuccess)
-     http_get_response.body
+    http_get_response.body
   end
 
   it "should include 'Welcome to ntopng'" do
