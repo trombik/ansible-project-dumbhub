@@ -1,15 +1,16 @@
 ---
 all:
   hosts:
-    myhost.i.trombik.org:
+    dumbhub.i.trombik.org:
       ansible_host: 10.1.5.110
+
   children:
-    foo:
+    dumbhub:
       hosts:
-        myhost.i.trombik.org:
+        dumbhub.i.trombik.org:
     prod_credentials:
       children:
-        foo:
+        dumbhub:
     prod:
       children:
-        foo:
+        dumbhub:
